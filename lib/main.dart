@@ -4,7 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:openapi/apikey.dart';
+import 'package:openapi/apiKey.dart';
 import 'package:openapi/apomodule.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
