@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     var headers = {
       'Content-Type': 'application/json',
       'Authorization':
-          'Bearer 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',
+          'Bearer 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',
     };
 
     var data =
@@ -40,10 +41,10 @@ class _MyAppState extends State<MyApp> {
     var url = Uri.parse('https://api.openai.com/v1/completions');
     var res = await http.post(url, headers: headers, body: data);
     if (res.statusCode != 200) {
+      controller.isDataLoading(false);
       if (kDebugMode) {
         throw ('http.post error: statusCode= ${res.statusCode}');
       }
-      controller.isDataLoading(false);
     }
     if (kDebugMode) {
       controller.isDataLoading(false);
@@ -57,32 +58,54 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color.fromARGB(255, 22, 20, 20),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.all(10),
               height: 750,
               width: double.maxFinite,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color.fromARGB(255, 67, 67, 67)),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30)),
+                  color: Colors.black),
               child: SingleChildScrollView(
                 child: Obx(
                   () => controller.isDataLoading.value
-                      ? const Center(child: CircularProgressIndicator())
-                      : Text(
-                          controller.resul == null
-                              ? ''
-                              : controller.resul!.choices![0].text,
+                      ? Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          height: 750,
+                          width: double.maxFinite,
+                          child: Center(
+                            child: DefaultTextStyle(
+                              style: GoogleFonts.arimaMadurai(
+                                  fontSize: 20.0, color: Colors.white),
+                              child: AnimatedTextKit(
+                                  isRepeatingAnimation: true,
+                                  repeatForever: true,
+                                  animatedTexts: [
+                                    TyperAnimatedText(
+                                      'Loading...',
+                                      speed: Duration(milliseconds: 100),
+                                    ),
+                                  ]),
+                            ),
+                          ))
+                      : DefaultTextStyle(
                           style: GoogleFonts.lato(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0.6,
-                              color: Colors.white),
+                              fontSize: 20.0, color: Colors.white),
+                          child: AnimatedTextKit(
+                              isRepeatingAnimation: false,
+                              animatedTexts: [
+                                TyperAnimatedText(
+                                    controller.resul == null
+                                        ? ''
+                                        : controller.resul!.choices![0].text,
+                                    speed: Duration(milliseconds: 10)),
+                              ]),
                         ),
                 ),
               ),
@@ -127,6 +150,7 @@ class _MyAppState extends State<MyApp> {
                           color: Colors.white),
                       child: IconButton(
                           onPressed: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             postCall(textController.text);
                           },
                           icon: Icon(
