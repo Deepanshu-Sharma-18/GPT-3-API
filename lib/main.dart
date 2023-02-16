@@ -4,7 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:openapi/apiKey.dart';
+import 'package:openapi/secret.dart';
 import 'package:openapi/apomodule.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,6 +25,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var textController = TextEditingController();
+  var scrollController = ScrollController();
 
   final HomePageController controller = Get.put(HomePageController());
 
@@ -66,18 +67,17 @@ class _MyAppState extends State<MyApp> {
             Container(
               height: 750,
               width: double.maxFinite,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+              margin: EdgeInsets.only(left: 6, top: 20, right: 6),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30)),
-                  color: Colors.black),
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+              ),
               child: SingleChildScrollView(
                 child: Obx(
                   () => controller.isDataLoading.value
                       ? Container(
                           margin: EdgeInsets.only(bottom: 10),
-                          height: 750,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                           width: double.maxFinite,
                           child: Center(
                             child: DefaultTextStyle(
@@ -94,18 +94,28 @@ class _MyAppState extends State<MyApp> {
                                   ]),
                             ),
                           ))
-                      : DefaultTextStyle(
-                          style: GoogleFonts.lato(
-                              fontSize: 20.0, color: Colors.white),
-                          child: AnimatedTextKit(
-                              isRepeatingAnimation: false,
-                              animatedTexts: [
-                                TyperAnimatedText(
-                                    controller.resul == null
-                                        ? ''
-                                        : controller.resul!.choices![0].text,
-                                    speed: Duration(milliseconds: 10)),
-                              ]),
+                      : Container(
+                          height: controller.resul == null ? 250 : null,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 30),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            color: Colors.black,
+                          ),
+                          child: DefaultTextStyle(
+                            style: GoogleFonts.lato(
+                                fontSize: 16.0,
+                                color: Color.fromARGB(255, 224, 217, 217)),
+                            child: AnimatedTextKit(
+                                isRepeatingAnimation: false,
+                                animatedTexts: [
+                                  TyperAnimatedText(
+                                      controller.resul == null
+                                          ? 'Hi there! What are you looking for today'
+                                          : controller.resul!.choices![0].text,
+                                      speed: Duration(milliseconds: 10)),
+                                ]),
+                          ),
                         ),
                 ),
               ),
